@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>网络直播用户规模及使用率</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+        #chart-container {
+            width: 1000px;
+            height: 800px;
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div id="chart-container"></div>
+    <script>
+        // 初始化图表
+        const chart = echarts.init(document.getElementById('chart-container'));
+        
+        // 数据准备
+        const years = ['2018', '2020', '2021', '2022', '2023', '2024'];
+        const userScale = [3.9676, 6.1685, 7.0337, 7.5065, 8.1566, 8.3303]; // 单位：亿人
+        const usageRate = [47.90, 62.40, 68.20, 70.30, 74.70, 75.20]; // 单位：%
+        
+        // 计算增长率（相对于前一年）
+        const growthRates = ['-', '55.49%', '14.03%', '6.72%', '8.66%', '2.13%'];
+        
+        // 图表配置
+        const option = {
+            // 背景透明
+            backgroundColor: 'transparent',
+            
+            // 标题配置
+            title: {
+                text: '2018-2024年网络直播用户规模及使用率',
+                left: 'center',
+                top: 20,
+                textStyle: {
+                    color: '#FFFFFF',
+                    fontSize: 14,
+                    fontWeight: 'bold'
+                }
+            },
+            
+            // 提示框配置
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                borderColor: '#FF7EDA',
+                borderWidth: 1,
+                textStyle: {
+                    color: '#FFFFFF'
+                },
+                formatter: function(params) {
+                    // 获取年份
+                    const year = params[0].axisValue;
+                    // 获取索引
+                    const index = years.indexOf(year);
+                    
+                    // 构建提示内容
+                    let result = year + '年<br/>';
+                    
+                    // 遍历所有系列
+                    params.forEach(param => {
+                        if (param.seriesType === 'bar') {
+                            result += '用户规模: <span style="color:#FF7EDA;font-weight:bold">' + param.value + '</span> 亿人<br/>';
+                        } else if (param.seriesType === 'line') {
+                            result += '使用率: <span style="color:#6420AA;font-weight:bold">' + param.value + '</span>%<br/>';
+                        }
+                    });
+                    
+                    // 添加增长率
+                    result += '增长率: <span style="color:#FFD700;font-weight:bold">' + growthRates[index] + '</span>';
+                    
+                    return result;
+                }
+            },
+            
+            // 网格配置
+            grid: {
+                left: '10%',
+                right: '10%',
+                top: '15%',
+                bottom: '15%',
+                containLabel: true
+            },
+            
+            // 图例配置
+            legend: {
+                data: ['用户规模', '使用率'],
+                bottom: '3%',
+                orient: 'horizontal',
+                textStyle: {
+                    color: '#FFFFFF',
+                    fontSize: 12
+                },
+                itemWidth: 15,
+                itemHeight: 10,
+                itemGap: 30,
+                left: 'center',
+                padding: [5, 0]
+            },
+            
+            // X轴配置
+            xAxis: {
+                type: 'category',
+                data: years,
+                axisLine: {
+                    lineStyle: {
+                        color: '#FFFFFF'
+                    }
+                },
+                axisLabel: {
+                    color: '#FFFFFF',
+                    fontSize: 12
+                },
+                axisTick: {
+                    lineStyle: {
+                        color: '#FFFFFF'
+                    }
+                }
+            },
+            
+            // Y轴配置（左轴 - 用户规模）
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '用户规模（亿人）',
+                    nameTextStyle: {
+                        color: '#FFFFFF',
+                        fontSize: 12
+                    },
+                    position: 'left',
+                    axisLine: {
+                        lineStyle: {
+                            color: '#FFFFFF'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#FFFFFF',
+                        fontSize: 12,
+                        formatter: '{value}'
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: 'rgba(255, 255, 255, 0.2)'
+                        }
+                    }
+                },
+                // Y轴配置（右轴 - 使用率）
+                {
+                    type: 'value',
+                    name: '使用率',
+                    nameTextStyle: {
+                        color: '#FFFFFF',
+                        fontSize: 12
+                    },
+                    position: 'right',
+                    axisLine: {
+                        lineStyle: {
+                            color: '#FFFFFF'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#FFFFFF',
+                        fontSize: 12,
+                        formatter: '{value}%'
+                    },
+                    splitLine: {
+                        show: false
+                    },
+                    min: 40,
+                    max: 80
+                }
+            ],
+            
+            // 数据系列配置
+            series: [
+                // 柱状图 - 用户规模
+                {
+                    name: '用户规模',
+                    type: 'bar',
+                    data: userScale,
+                    yAxisIndex: 0,
+                    itemStyle: {
+                        color: '#FF7EDA',
+                        borderRadius: [4, 4, 0, 0]
+                    },
+                    barWidth: '30%',
+                    emphasis: {
+                        itemStyle: {
+                            color: '#FF9FD6',
+                            borderWidth: 1,
+                            borderColor: '#FFFFFF'
+                        }
+                    }
+                },
+                // 折线图 - 使用率
+                {
+                    name: '使用率',
+                    type: 'line',
+                    data: usageRate,
+                    yAxisIndex: 1,
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    lineStyle: {
+                        color: '#6420AA',
+                        width: 3
+                    },
+                    itemStyle: {
+                        color: '#6420AA',
+                        borderColor: '#FFFFFF',
+                        borderWidth: 2
+                    },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: 'rgba(100, 32, 170, 0.5)' },
+                            { offset: 1, color: 'rgba(100, 32, 170, 0.1)' }
+                        ])
+                    },
+                    emphasis: {
+                        scale: true,
+                        itemStyle: {
+                            borderWidth: 3,
+                            shadowBlur: 10,
+                            shadowColor: 'rgba(100, 32, 170, 0.8)'
+                        }
+                    }
+                }
+            ],
+            
+            // 添加数据来源标注
+            graphic: {
+                elements: [{
+                    type: 'text',
+                    left: 20,
+                    bottom: 20,
+                    style: {
+                        text: '数据来源：CNNIC',
+                        fontSize: 10,
+                        fill: '#878787',
+                        textAlign: 'left'
+                    }
+                }]
+            }
+        };
+        
+        // 应用配置
+        chart.setOption(option);
+        
+        // 响应式调整
+        window.addEventListener('resize', function() {
+            chart.resize();
+        });
+    </script>
+</body>
+</html>
