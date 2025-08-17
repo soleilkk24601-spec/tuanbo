@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>中国MCN机构发展状况</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+        #chart-container {
+            width: 600px;
+            height: 100vh;
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div id="chart-container"></div>
+    <script>
+        // 初始化图表
+        const chart = echarts.init(document.getElementById('chart-container'));
+        
+        // 数据准备
+        const years = ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'];
+        const quantities = [160, 420, 1700, 5000, 20000, 21000, 22000, 24000, 25400, 26200];
+        const scales = [8, 32, 78, 112, 168, 245, 335, 432, 545, 636];
+        const growthRates = ['-','300.00%', '143.80%', '43.6%', '50.00%', '45.80%', '36.80%', '28.90%', '26.10%',  '16.80%'];
+        
+        // 图表配置
+        const option = {
+            // 背景透明
+            backgroundColor: 'transparent',
+            
+            // 标题配置
+            title: {
+                text: '2015-2024年中国MCN机构发展状况',
+                left: 'center',
+                top: 20,
+                textStyle: {
+                    color: '#FFFFFF',
+                    fontSize: 16,
+                    fontWeight: 'bold'
+                }
+            },
+            
+            // 提示框配置
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                borderColor: '#FF7EDA',
+                borderWidth: 1,
+                textStyle: {
+                    color: '#FFFFFF'
+                },
+                formatter: function(params) {
+                    // 获取年份
+                    const year = params[0].axisValue;
+                    // 获取索引
+                    const index = years.indexOf(year);
+                    
+                    // 构建提示内容
+                    let result = year + '年<br/>';
+                    
+                    // 遍历所有系列
+                    params.forEach(param => {
+                        if (param.seriesType === 'bar') {
+                            result += '数量: <span style="color:#6420AA;font-weight:bold">' + param.value + '</span> 家<br/>';
+                        } else if (param.seriesType === 'line') {
+                            result += '规模: <span style="color:#FF7EDA;font-weight:bold">' + param.value + '</span> 亿元<br/>';
+                        }
+                    });
+                    
+                    // 添加增长率
+                    result += '增长率: <span style="color:#FFD700;font-weight:bold">' + growthRates[index] + '</span>';
+                    
+                    return result;
+                }
+            },
+            
+            // 网格配置
+            grid: {
+                left: '10%',
+                right: '10%',
+                top: '15%',
+                bottom: '15%',
+                containLabel: true
+            },
+            
+            // 图例配置
+            legend: {
+                data: ['MCN机构数量', '市场规模'],
+                bottom: '10%',
+                textStyle: {
+                    color: '#FFFFFF',
+                    fontSize: 14
+                },
+                itemWidth: 15,
+                itemHeight: 10,
+                itemGap: 20
+            },
+            
+            // X轴配置
+            xAxis: {
+                type: 'category',
+                data: years,
+                axisLine: {
+                    lineStyle: {
+                        color: '#FFFFFF'
+                    }
+                },
+                axisLabel: {
+                    color: '#FFFFFF',
+                    fontSize: 12
+                },
+                axisTick: {
+                    lineStyle: {
+                        color: '#FFFFFF'
+                    }
+                }
+            },
+            
+            // Y轴配置（左轴 - 数量）
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '数量',
+                    nameTextStyle: {
+                        color: '#FFFFFF',
+                        fontSize: 12
+                    },
+                    position: 'left',
+                    axisLine: {
+                        lineStyle: {
+                            color: '#FFFFFF'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#FFFFFF',
+                        fontSize: 12,
+                        formatter: '{value}'
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: 'rgba(255, 255, 255, 0.2)'
+                        }
+                    }
+                },
+                // Y轴配置（右轴 - 规模）
+                {
+                    type: 'value',
+                    name: '规模（亿元）',
+                    nameTextStyle: {
+                        color: '#FFFFFF',
+                        fontSize: 12
+                    },
+                    position: 'right',
+                    axisLine: {
+                        lineStyle: {
+                            color: '#FFFFFF'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#FFFFFF',
+                        fontSize: 12,
+                        formatter: '{value}'
+                    },
+                    splitLine: {
+                        show: false
+                    }
+                }
+            ],
+            
+            // 数据系列配置
+            series: [
+                // 柱状图 - 数量
+                {
+                    name: 'MCN机构数量',
+                    type: 'bar',
+                    data: quantities,
+                    yAxisIndex: 0,
+                    itemStyle: {
+                        color: '#6420AA',
+                        borderRadius: [4, 4, 0, 0]
+                    },
+                    barWidth: '30%',
+                    emphasis: {
+                        itemStyle: {
+                            color: '#7B2CBF',
+                            borderWidth: 1,
+                            borderColor: '#FFFFFF'
+                        }
+                    }
+                },
+                // 折线图 - 规模
+                {
+                    name: '市场规模',
+                    type: 'line',
+                    data: scales,
+                    yAxisIndex: 1,
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    lineStyle: {
+                        color: '#FF7EDA',
+                        width: 3
+                    },
+                    itemStyle: {
+                        color: '#FF7EDA',
+                        borderColor: '#FFFFFF',
+                        borderWidth: 2
+                    },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: 'rgba(255, 126, 218, 0.5)' },
+                            { offset: 1, color: 'rgba(255, 126, 218, 0.1)' }
+                        ])
+                    },
+                    emphasis: {
+                        scale: true,
+                        itemStyle: {
+                            borderWidth: 3,
+                            shadowBlur: 10,
+                            shadowColor: 'rgba(255, 126, 218, 0.8)'
+                        }
+                    }
+                }
+            ],
+            
+            // 添加数据来源标注
+            graphic: {
+                elements: [{
+                    type: 'text',
+                    left: 20,
+                    bottom: 20,
+                    style: {
+                        text: '数据来源：艾媒数据中心、克劳锐指数研究院',
+                        fontSize: 14,
+                        fill: '#999999',
+                        textAlign: 'left'
+                    }
+                }]
+            }
+        };
+        
+        // 应用配置
+        chart.setOption(option);
+        
+        // 响应式调整
+        window.addEventListener('resize', function() {
+            chart.resize();
+        });
+    </script>
+</body>
+</html>
